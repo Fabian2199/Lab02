@@ -42,7 +42,6 @@ setInterval(()=>{
            }
         }
     });
-	updateStates(serverAStatus, serverBStatus);
 },1000);
 
 function addServer(){
