@@ -7,7 +7,6 @@ const port = 5000
 const ip = '127.0.0.1'
 
 app.use(express.json());
-app.use(cors());
 app.use(express.static('public'));
 
 var servers = [];
