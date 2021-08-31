@@ -2,17 +2,14 @@ const express = require("express")
 const exec = require('child_process').exec;
 const readLastLines = require('read-last-lines')
 const nodemailer = require('nodemailer');
+const app = express()
+const port = 5000
+const ip = '127.0.0.1'
 
 app.use(express.json());
 app.use(cors());
 app.use(express.static('public'));
 
-let serverAStatus = false;
-let serverBStatus = false;
-let time='';
-let states = [];
-const port = 5000
-const ip = '127.0.0.1'
 var servers = [];
 var currentPort =4000
 var requests=[];
