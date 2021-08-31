@@ -1,7 +1,6 @@
 const express = require("express")
 const exec = require('child_process').exec;
 const readLastLines = require('read-last-lines')
-const cors = require('cors')
 const nodemailer = require('nodemailer');
 
 app.use(express.json());
