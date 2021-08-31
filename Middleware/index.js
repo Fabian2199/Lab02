@@ -86,7 +86,7 @@ function sendEmail(destino, encabezado, texto){
 }
 
 app.get("/add-server", (req, res) => {
-	addServer;
+	addServer();
 	res.send("ok")
 });
 
