@@ -29,7 +29,9 @@ app.get('/', (req, res) => {
     console.log("frase "+ quoteRandom()); 
     res.send("ok")
 })
-
+app.get('/status', (req, res) => { 
+    res.send("ok")
+})
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
 })
