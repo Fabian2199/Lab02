@@ -27,7 +27,7 @@ function quoteRandom(){
 
 app.get('/', (req, res) => {
     console.log("frase "+ quoteRandom()); 
-    res.send("hola")
+    res.send("ok")
 })
 app.get('/status', (req, res) => { 
     res.send("ok")
