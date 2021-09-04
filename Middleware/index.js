@@ -14,14 +14,22 @@ app.use(cors({ origin: true, credentials: true }))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
-var servers = [];
 var currentPort =4001
+var servers = [];
+var reqId = 1
 var requests=[];
 var responses = [];
 
 addServer();
 
 setInterval(()=>{
+    if(requests[0]){
+        let server = servers.shift();
+
+        if(server){
+            sendImage(server, requests.shift());
+        }
+    }
     servers.forEach(ss=>{
         exec(`sh watch.sh ${ip} ${ss.port}`, (error, stout, stderr) => {
             if (error !== null) {
@@ -34,15 +42,21 @@ setInterval(()=>{
         lines.splice(lines.length - 1)
         let data;
         let serverIndex;
-        console.log("aquiii "+lines)
+        
         for (var i = 0; i < lines.length; i++) {
            data = lines[i].split(' ');
            serverIndex = servers.findIndex(ss => ss.port == data[1])
 		   
-           if(serverIndex != undefined){
-               servers[serverIndex].monitor.time = data[0];
-               servers[serverIndex].monitor.status = data[2] == "Server"
-           }
+            if(serverIndex != undefined){
+                servers[serverIndex].monitor.time = data[0];
+                    if (data[2]=="server"){
+                        servers[serverIndex].monitor.status = true
+                    }
+                    else {
+                        servers[serverIndex].monitor.status = false
+                    }  
+            }
+            console.log("aquuui"+servers[serverIndex].monitor.status)
         }
     });
 },1000);
@@ -124,8 +138,12 @@ app.get("/send-email", (req, res) => {
 	sendEmail("neyder.rodriguez@uptc.edu.co","prueba","hola desde server");
 	res.send("ok")
 });
-app.get("/", (req, res) => {
+app.get("/logs", (req, res) => {
 	res.sendFile(__dirname + '/public/index.html');
+});
+
+app.post("/", (req, res) => {
+    res.send(servers)
 });
 
 app.post("/uploadData",(req, res) => {
