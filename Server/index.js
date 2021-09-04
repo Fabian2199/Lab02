@@ -49,7 +49,7 @@ app.get('/', (req, res) => {
     res.send("ok")
 })
 app.get('/status', (req, res) => { 
-    res.send("ok")
+    res.send("server ok")
 })
 app.post('/receiveImage', (req, res) => {
     console.log("Receive image from middleware", req.body.name);
