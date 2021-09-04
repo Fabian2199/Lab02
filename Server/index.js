@@ -1,4 +1,5 @@
 const express = require('express')
+const fs = require('fs')
 const app = express()
 const port = 4000
 var quotes = [];
@@ -44,6 +45,10 @@ function writeImage(fileName, imageCaption) {
         return false;
     });
 }
+function base64_decode(data) {
+    return new Buffer(data, 'base64');
+}
+
 app.get('/', (req, res) => {
     console.log("frase "+ quoteRandom()); 
     res.send("ok")
