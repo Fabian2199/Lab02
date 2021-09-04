@@ -36,9 +36,13 @@ function writeImage(fileName, imageCaption) {
 
     return Jimp.read(fileName).then(image => {
         loadedImage = image;
-        return Jimp.loadFont(Jimp.FONT_SANS_16_ORANGE);
+        return Jimp.loadFont(Jimp.FONT_SANS_16_BLACK);
     }).then(font => {
-        loadedImage.print(font, 10, loadedImage.bitmap.height - 20, imageCaption).write(fileName);
+        loadedImage.print(font, 10, loadedImage.bitmap.height - 20, {
+            text: imageCaption,
+            alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
+            alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
+        }).write(fileName);
         return true;
     }).catch(err => {
         console.error(err);
