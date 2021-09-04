@@ -72,7 +72,7 @@
             for (let value of data) {
                 content.innerHTML +=
                 `<tr>
-                    <td class="px-6 py-4">${value.monitor.status}</td>
+                    <td class="px-6 py-4">${value.monitor.time}</td>
                     <td class="text-center">${value.port}</td>
                     <td class="text-center">
                         <i class="fas fa-${value.monitor.status ? 'check-circle' : 'exclamation-circle'} text-${value.monitor.status ? 'green-600' : 'red-500'}"></i>
