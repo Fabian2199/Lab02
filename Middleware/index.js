@@ -56,7 +56,7 @@ setInterval(()=>{
                         servers[serverIndex].monitor.status = false
                     }  
             }
-            console.log("aquuui"+servers[serverIndex].monitor.status)
+            console.log(servers[serverIndex])
         }
     });
 },1000);
