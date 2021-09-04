@@ -2,21 +2,24 @@ const express = require("express")
 const exec = require('child_process').exec;
 const readLastLines = require('read-last-lines')
 const nodemailer = require('nodemailer');
+const cors = require('cors')
+const axios = require('axios')
 const app = express()
 const port = 5000
 const ip = '127.0.0.1'
 
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static(__dirname + '/public'))
+app.use(cors({ origin: true, credentials: true }))
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
 
 var servers = [];
-var currentPort =4000
+var currentPort =4001
 var requests=[];
 var responses = [];
 
-app.listen(port, () => {
-	console.log(`App is listening to port ${port}`);
-  });  
+addServer();
 
 setInterval(()=>{
     servers.forEach(ss=>{
@@ -35,7 +38,7 @@ setInterval(()=>{
         for (var i = 0; i < lines.length; i++) {
            data = lines[i].split(' ');
            serverIndex = servers.findIndex(ss => ss.port == data[1])
-
+		   
            if(serverIndex != undefined){
                servers[serverIndex].monitor.time = data[0];
                servers[serverIndex].monitor.status = data[2] == "Server"
@@ -85,6 +88,33 @@ function sendEmail(destino, encabezado, texto){
 	});
 }
 
+function sendImage(server, req){
+	let serverURL = 'http://' + ip + ':' + server.port;
+    console.log("Selected server", serverURL);
+    req.body.image.name = req.id + req.body.image.name;
+    console.log(req.body.image.name)
+    axios({
+        method: 'post',
+        url: serverURL + '/receiveImage',
+        data: req.body.image
+    }).then(imgRes=>{
+        let data = imgRes.data;
+        console.log("Image returns", data.ok);
+        
+        if(data.ok){
+            data.imgURL = serverURL + '/' + req.body.image.name;
+        }else{
+            console.log("receive image", imgRes);
+        }
+
+        servers.push(server);
+        responses.push({id:req.id, data});
+    }).catch(err=>{
+        sendEmail(req.body.email, "Error con servidor",`El servidor ${ip}:${server.port} no sirve.`)
+        console.log(err);
+    });
+}
+
 app.get("/add-server", (req, res) => {
 	addServer();
 	res.send("ok")
@@ -98,3 +128,22 @@ app.get("/", (req, res) => {
 	res.sendFile(__dirname + '/public/index.html');
 });
 
+app.post("/uploadData",(req, res) => {
+	console.log("Connection by client");
+	let rId = reqId++;
+	requests.push({id: rId, body:req.body });
+	
+	const interval = setInterval(()=>{
+		let resp = responses.find(rr => rr.id == rId);
+
+		if(resp){
+			res.send(resp.data);
+			responses.splice(responses.indexOf(resp),1)
+			clearInterval(interval);
+		}
+	}, 1000);
+});
+
+app.listen(port, () => {
+	console.log(`App is listening to port ${port}`);
+});  
