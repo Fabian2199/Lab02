@@ -2,7 +2,12 @@ const express = require('express')
 const app = express()
 const port = 4000
 var quotes = [];
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
+app.use(express.static(__dirname + '/public'))
+
 getQuote();
+
 function getQuote(){
     var Request = require("request");
     Request.get("https://raw.githubusercontent.com/bitgary/hola-mundo/master/citas.json", (error, response, body) => {
