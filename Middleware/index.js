@@ -129,7 +129,7 @@ function sendImage(server, req){
     });
 }
 
-app.get("/add-server", (req, res) => {
+app.get("/add_server", (req, res) => {
 	addServer();
 	res.send("ok")
 });
